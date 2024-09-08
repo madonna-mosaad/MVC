@@ -10,12 +10,13 @@ namespace MVC.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepository _repository;
-        private readonly IWebHostEnvironment _environment;//registered in AddControllerWithView as (Singelton)
+        private readonly IWebHostEnvironment _environment;//registered in AddControllerWithView as (Singelton) tomake developer log any exception 
         public DepartmentController(IDepartmentRepository repository, IWebHostEnvironment environment)
         {
             _repository = repository;
             _environment = environment;
         }
+
         //[HttpGet] is the default
         public IActionResult Index()
         {
@@ -40,11 +41,13 @@ namespace MVC.Controllers
             }
 
         }
+
         //[HttpGet] the default 
         public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]//to prevent any tool to arrive to this end-point(action)and edit any value of prop. of obj (parameter)=>(browser user only can)
                                   //above any action deal with DB and take parameter
@@ -71,23 +74,25 @@ namespace MVC.Controllers
                     }
                 }
             }
-            return View(newDepartment);//the mean of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
+            return View(newDepartment);//the reason of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
 
         }
+
         //[HttpGet] the default 
         public IActionResult Details(int? id, string ViewName = "Details")//make int nullable to catch if the front not send the id value 
         {
-            if (!id.HasValue)
+            if (!id.HasValue)//if front doesnot send id (forget write asp-route-id="..")
             {
                 return BadRequest();//400 state-Code (if front send wrong data or doesnot send any data ) 
             }
             Department dep = _repository.GetById(id.Value);
-            if (dep == null)
+            if (dep == null)//if data not found in DB
             {
                 return NotFound();// 404 state_Code (if the data not found in DB)
             }
             return View(ViewName, dep);
         }
+
         //[HttpGet] the default 
         public IActionResult Edit(int? id)
         {
@@ -101,7 +106,7 @@ namespace MVC.Controllers
         {
             if (ModelState.IsValid)//mean that all validations (sever side or client side) is ok
             {
-                if (id != department.Id)
+                if (id != department.Id)//if any tool edit the department.Id then it will send badRequest
                 {
                     return BadRequest();
                 }
@@ -124,14 +129,16 @@ namespace MVC.Controllers
                     }
                 }
             }
-            return View(department);//the mean of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
+            return View(department);//the reason of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
 
         }
+
         //[HttpGet] the default
         public IActionResult Delete(int? id)
         {
             return Details(id, "Delete");//to prevent code repeating
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]//to prevent any tool to arrive to this end-point(action) and edit any value of prop. of obj (parameter)=>(browser user only can)
                                   //above any action deal with DB and take parameter
@@ -154,7 +161,7 @@ namespace MVC.Controllers
                     //friendly message to user
                     ModelState.AddModelError(string.Empty, "An Error occured during edit department");
                 }
-                return View(department);
+                return View(department);//the reason of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
             }
         }
     }
