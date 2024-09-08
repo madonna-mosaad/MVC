@@ -1,0 +1,32 @@
+﻿@model Department ;
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Department Delete</h1>
+
+<br />
+<br />
+@*form go to post action so will go to create action that [HttpPost]
+  form by default make asp-route-department="@Model" (the value of create action's parameter)
+*@
+<form asp-controller="Department" asp-action="Delete" method="post">
+    @* (asp-for) اللي المستخدم هيدخله هيتخزن في الموديل في البروبيرتي اللي اسمها في *@
+    <div>
+        <label asp-for="Code" class="col-form-label"></label>@*asp-for instead of for*@
+        <input type="text" asp-for="Code" class="form-control" readonly />@*asp-for instead of name(take the name of property in Model) and id(that link with (for) in lable)*@
+
+    </div>
+    <div>
+        <label asp-for="Name" class="col-form-label"></label>
+        <input type="text" asp-for="Name" class="form-control" readonly />
+
+        <div>
+            <label asp-for="DateOfCreation" class="col-form-label"></label>
+            <input type="datetime-local" asp-for="DateOfCreation" class="form-control" readonly />
+        </div>
+        <input type="submit" value="Delete" class="btn btn-primary mt-5" />@*submit that make clr go to the action that I put in form(Create)  *@
+        <a asp-controller="Department" asp-action="Index" class="btn btn-Light mt-5">Back to home</a>
+</form>
+
+

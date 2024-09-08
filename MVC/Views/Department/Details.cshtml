@@ -1,0 +1,31 @@
+﻿@model Department;//the Type of @Model (the value of parameter that View Method take)
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Department Details</h1>
+<br />
+<br />
+
+<div>
+    <div>
+        <label asp-for="Code" class="col-form-label"></label>@*asp-for instead of for*@
+        <input type="text" asp-for="Code" class="form-control" readonly />@*asp-for instead of name(take the name of property in Model) and id(that link with (for) in lable)*@
+
+    </div>
+    <div>
+        <label asp-for="Name" class="col-form-label"></label>
+        <input type="text" asp-for="Name" class="form-control" readonly />
+
+    </div>
+    <div>
+        <label asp-for="DateOfCreation" class="col-form-label"></label>
+        <input type="datetime-local" asp-for="DateOfCreation" class="form-control" readonly />
+    </div>
+    <a asp-controller="Department" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary mt-5">Edit</a>
+    <a asp-controller="Department" asp-action="Index" class="btn btn-Light mt-5">Back to home</a>
+</div>
+
+
+
+
