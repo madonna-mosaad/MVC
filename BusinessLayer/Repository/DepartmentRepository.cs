@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Interfaces;
 using DataAccessLayer.Data.Contexts;
 using DataAccessLayer.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace BusinessLayer.Repository
 
         public IEnumerable<Department> GetAll()
         {
-            return _dbContext.Departments.ToList();
+            return _dbContext.Departments.AsNoTracking().ToList();
         }
 
         public Department GetById(int id)
