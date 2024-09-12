@@ -10,39 +10,13 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Repository
 {
-    internal class EmployeeRepository : IEmployeeRepository
+    public class EmployeeRepository :GenericRepository<Employee>, IEmployeeRepository
     {
-        private readonly AppDbContext _dbcontext;
-        public EmployeeRepository(AppDbContext dbContext) 
-        { 
-            _dbcontext = dbContext;
-        }
-        public int Add(Employee employee)
-        {
-            _dbcontext.Employees.Add(employee);
-            return _dbcontext.SaveChanges();
-        }
+        public EmployeeRepository(AppDbContext appDbContext) : base(appDbContext) { }
 
-        public int Delete(Employee employee)
+        public IQueryable<Employee> GetByAddress(string address)
         {
-            _dbcontext.Employees.Remove(employee);
-            return _dbcontext.SaveChanges();
-        }
-
-        public IEnumerable<Employee> GetAll()
-        {
-            return _dbcontext.Employees.AsNoTracking().ToList();
-        }
-
-        public Employee GetById(int id)
-        {
-            return _dbcontext.Employees.Find(id);
-        }
-
-        public int Update(Employee employee)
-        {
-            _dbcontext.Employees.Update(employee);
-            return _dbcontext.SaveChanges();
+           return _appDbContext.Employees.Where(e => e.Address == address).AsNoTracking();
         }
     }
 }

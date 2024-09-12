@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Interfaces;
+using BusinessLayer.Repository;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -53,25 +54,17 @@ namespace MVC.Controllers
                                   //above any action deal with DB and take parameter
         public IActionResult Create(Department newDepartment)
         {
-            if (ModelState.IsValid)//mean that all validations (sever side or client side) is ok
+            if (ModelState.IsValid)//mean that all validations (sever side or client side(check after send request to server and response by the check result)) is ok
             {
-                try//to handle any exception appear in DB
+                var count = _repository.Add(newDepartment);
+                if (count > 0)
                 {
-                    _repository.Add(newDepartment);
+                    TempData["Message"] = "successfully created";
                     return RedirectToAction("Index");
                 }
-                catch (Exception ex)
+                else
                 {
-                    if (_environment.IsDevelopment())
-                    {
-                        //log exception (the developer to handle the exception)
-                        ModelState.AddModelError(string.Empty, ex.Message);
-                    }
-                    else
-                    {
-                        //friendly message to user
-                        ModelState.AddModelError(string.Empty, "An Error occured during add department");
-                    }
+                    TempData["Message"] = "not successfully created";
                 }
             }
             return View(newDepartment);//the reason of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
@@ -104,7 +97,7 @@ namespace MVC.Controllers
                                   //above any action deal with DB and take parameter
         public IActionResult Edit([FromRoute] int id, Department department)// I make id take its value from Route only to prevent any one to edit the id value from f12 code (in website) or any tools
         {
-            if (ModelState.IsValid)//mean that all validations (sever side or client side) is ok
+            if (ModelState.IsValid)//mean that all validations (sever side or client side(check after send request to server and response by the check result)) is ok
             {
                 if (id != department.Id)//if any tool edit the department.Id then it will send badRequest
                 {

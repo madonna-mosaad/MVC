@@ -14,7 +14,6 @@ namespace DataAccessLayer.Data.Configurations
         public void Configure(EntityTypeBuilder<Department> builder)
         {
            
-           builder.Property(nameof(Department.Name)).IsRequired();
         }
     }
 }

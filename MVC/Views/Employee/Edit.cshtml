@@ -1,0 +1,20 @@
+﻿@*same comments as Department*@
+@model Employee ;
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit Employee</h1>
+<br />
+<br />
+
+<form asp-action="Edit" method="post">
+    <partial name="PartialView/CreateEditPV" />
+    <input type="submit" value="Edit" class="btn btn-primary mt-5" />
+    <a asp-action="Index" class="btn btn-Light mt-5">Back to home</a>
+</form>
+@section client_side_validation
+{
+    <partial name="_ValidationScriptsPartial" />
+}
+

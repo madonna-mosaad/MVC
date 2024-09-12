@@ -1,4 +1,4 @@
-﻿@model Department ;//type of Model (the value of parameter that View method take )
+﻿@model Department ;//type of Model (the value of parameter that View method take if exist)
 @{
     ViewData["Title"] = "Delete";
 }
@@ -11,34 +11,15 @@
 @*form go to post action so will go to delete action that [HttpPost]
   form by default make asp-route-department="@Model" 
 *@
-<form asp-controller="Department" asp-action="Delete" method="post">
+<form asp-action="Delete" method="post">
 
     @* (asp-for) اللي المستخدم هيدخله هيتخزن في الموديل في البروبيرتي اللي اسمها في *@
-    <div>
-        @*asp-for instead of for (that link with id)
-        <lable for ="Code" ...></lable>
-        *@
-        <label asp-for="Code" class="col-form-label"></label>
-        @*asp-for instead of name(that take the name of property in Model to store in it) and id(that link with (for) in lable)
-        <input type ="text" name ="Code" id="Code" ... />
-        *@
-        <input type="text" asp-for="Code" class="form-control" readonly />@*readonly to prevent user to edit*@
-    </div>
-
-    <div>
-        <label asp-for="Name" class="col-form-label"></label>
-        <input type="text" asp-for="Name" class="form-control" readonly />@*readonly to prevent user to edit*@
-    </div>
-
-    <div>
-        <label asp-for="DateOfCreation" class="col-form-label"></label>
-        <input type="datetime-local" asp-for="DateOfCreation" class="form-control" readonly />@*readonly to prevent user to edit*@
-    </div>
-
+    <partial name="PartialView/DetailsDeletePV" />
     @*submit that make clr go to the action that I put in form tag (delete)  *@
     <input type="submit" value="Delete" class="btn btn-primary mt-5" />
     @*<a></a> is always go to Get Action*@
-    <a asp-controller="Department" asp-action="Index" class="btn btn-Light mt-5">Back to home</a>
+    @*I can don't write the asp-controller="" if the action in same controller *@
+    <a asp-action="Index" class="btn btn-Light mt-5">Back to home</a>
 </form>
 
 

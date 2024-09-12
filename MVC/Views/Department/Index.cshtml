@@ -1,10 +1,17 @@
-﻿@model IEnumerable<Department>;//type of @Model(value of parameter that View method take )
+﻿@model IEnumerable<Department>;//type of @Model(value of parameter that View method take if exist)
 
 <h1>Departments Data</h1>
 <br />
 <br />
 @*by default go to action that its method get [HttpGet]*@
-<a asp-controller="Department" asp-action="Create" class="btn btn-primary">Create new Department</a>
+@*I can don't write the asp-controller="" if the action in same controller *@
+<a asp-action="Create" class="btn btn-primary">Create new Department</a>
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-primary mt-3">
+        <h6>@TempData["Message"]</h6>
+    </div>
+}
 @if (Model?.Count() > 0)//Model is the parameter of View Function in Index action in DepartmentController(IEnumrable<Department>)
 {
     <table class="table table-hover table-striped mt-5">
@@ -23,21 +30,11 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.Code</td>
-                    <td>@item.Name</td>
-                    <td>@item.DateOfCreation</td>
-                    <td>
-                        @*<a></a> is always go to Get Action*@
-                        <a asp-controller="Department" asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning"><i class="fas fa-eye">Details</i></a>
-                    </td>
-                    <td>
-                        @*<a></a> is always go to Get Action*@
-                        <a asp-controller="Department" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success"><i class="fas fa-edit">Update</i></a>
-                    </td>
-                    <td>
-                        @*<a></a> is always go to Get Action*@
-                        <a asp-controller="Department" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="fas fa-trash">Delete</i></a>
-                    </td>
+                    @*DisplayFor() => to implement all frontend data annotation*@
+                    <td>@Html.DisplayFor(e => item.Code)</td>
+                    <td>@Html.DisplayFor(e => item.Name)</td>
+                    <td>@Html.DisplayFor(e => item.DateOfCreation)</td>
+                    <partial name="_ButtonsPV" model="@item.Id" />
                 </tr>
             }
         </tbody>
