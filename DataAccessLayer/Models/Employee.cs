@@ -17,16 +17,16 @@ namespace DataAccessLayer.Models
         Female=2
     }
 
-    public class Employee
+    public class Employee : ModelBase
     {
-        public int Id { get; set; }
+        //same coments as Department
         [Required(ErrorMessage ="Name is required")]
         [MaxLength(50,ErrorMessage ="maximum length is 50")]
         [MinLength(4, ErrorMessage = "minimum length is 50")]
         public string Name { get; set; }
-        [Range(21, 60)]
+        [Range(21, 60 ,ErrorMessage ="the range is 21 to 60")]
         public int? Age { get; set; }
-        [RegularExpression(@"^[0-9]{1,3}-[a-zA-Z]{4,10}-[a-zA-z]{5,10}$",
+        [RegularExpression(@"^\d{1,3}-[a-zA-Z]{4,}-[a-zA-Z]{4,}-[a-zA-Z]{4,}$",
             ErrorMessage ="Address must be like 123-street-city-country")]
         public string Address { get; set; }
         [DataType(DataType.Currency)]

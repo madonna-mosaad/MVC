@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Interfaces
 {
-    public interface IEmployeeRepository
+    public interface IEmployeeRepository:IGenericRepository<Employee>
     {
-        public IEnumerable<Employee> GetAll();
-        public Employee GetById(int id);
-        public int Add(Employee employee);
-        public int Update(Employee employee);
-        public int Delete(Employee employee);
+        public IQueryable<Employee> GetByAddress(string address);
     }
 }
