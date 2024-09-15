@@ -8,9 +8,9 @@
 <br />
 <br />
 
-<div>
-    <partial name="PartialView /DetailsDeletePV" />
-    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-primary mt-5">Edit</a>
+<form asp-action="Delete">
+    <partial name="PartialView/DetailsDeletePV" />
+    <input type="submit" value="Delete" class="btn btn-primary mt-5">
     <a asp-action="Index" class="btn btn-Light mt-5">Back to home</a>
-</div>
+</form>
 

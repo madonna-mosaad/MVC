@@ -19,11 +19,16 @@ namespace MVC.Controllers
         }
 
         //[HttpGet] is the default
-        public IActionResult Index()
+        public IActionResult Index(string Name)
         {
             try
             {
-                var department = _repository.GetAll();
+                if (string.IsNullOrEmpty(Name))
+                {
+                    var departmentt = _repository.GetAll();
+                    return View(departmentt);
+                }
+                var department = _repository.GetByName(Name);
                 return View(department);
             }
             catch (Exception ex)
@@ -57,7 +62,7 @@ namespace MVC.Controllers
             if (ModelState.IsValid)//mean that all validations (sever side or client side(check after send request to server and response by the check result)) is ok
             {
                 var count = _repository.Add(newDepartment);
-                if (count > 0)
+                if (count > 0)//to handle any exception appear in DB(to catch if doesn't add)
                 {
                     TempData["Message"] = "successfully created";
                     return RedirectToAction("Index");

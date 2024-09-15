@@ -31,6 +31,11 @@ namespace BusinessLayer.Repository
 
         public IEnumerable<T> GetAll()
         {
+           if ( typeof(T) == typeof(Employee))
+           {
+                //the casting because the method return IEnumrable<T> and without casting _appDb.... is IEnumrable<Employee>
+                return (IEnumerable<T>) _appDbContext.Employees.Include(e=>e.Department).AsNoTracking().ToList();
+           }
            return _appDbContext.Set<T>().AsNoTracking().ToList();
         }
 

@@ -8,8 +8,8 @@
 <br />
 <br />
 
-@*form go to post action so will go to delete action that [HttpPost]
-  form by default make asp-route-department="@Model" 
+@*form go to post action so will go to delete action that [HttpPost](if i didn't define the method then the default is method="post" )
+  form by default make asp-route-department="@Model" (the value of Delete action's parameter if has parameter same type as @Model)
 *@
 <form asp-action="Delete" method="post">
 
