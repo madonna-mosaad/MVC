@@ -13,7 +13,7 @@ namespace DataAccessLayer.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Department> builder)
         {
-           
+           builder.HasMany(D=>D.Employees).WithOne(E=>E.Department).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -9,6 +9,12 @@
 <br />
 
 <a asp-action="Create" class="btn btn-primary">Create new Employee</a>
+<div class="align-content-center mt-3 ">
+    <form asp-action="Index" method="get" >
+        <input type="text" name="Name" placeholder="search by name"/>
+        <input type="submit" value="Search" class="btn btn-success" />
+    </form>
+</div>
 @if (TempData["Message"]!=null)
 {
     <div class="alert alert-primary mt-3">
@@ -26,6 +32,7 @@
                 <th>@Html.DisplayNameFor(Employee => Employee.Age)</th>
                 <th>@Html.DisplayNameFor(Employee => Employee.Address)</th>
                 <th>@Html.DisplayNameFor(Employee => Employee.Salary)</th>
+                <th>@Html.DisplayNameFor(Employee=>Employee.Department)</th>
                 <th>@Html.DisplayNameFor(Employee => Employee.Email)</th>
                 <th>@Html.DisplayNameFor(Employee => Employee.PhoneNumber)</th>
                 <th>@Html.DisplayNameFor(Employee => Employee.HireDate)</th>
@@ -40,10 +47,12 @@
             {
                 <tr>
                     <td>@Html.DisplayFor(e => employee.Name) </td>
-                    <td>>@Html.DisplayFor(e =>employee.Gender)</td>
+                    <td>@Html.DisplayFor(e =>employee.Gender)</td>
                     <td>@Html.DisplayFor(e => employee.Age)</td>
                     <td>@Html.DisplayFor(e => employee.Address)</td>
                     <td>@Html.DisplayFor(e => employee.Salary)</td>
+                    @*to get data from department Table , i did Include in Genric Reposirory in GetAll*@
+                    <td>@Html.DisplayFor(e=>employee.Department.Name)</td>
                     <td>@Html.DisplayFor(e => employee.Email)</td>
                     <td>@Html.DisplayFor(e => employee.PhoneNumber)</td>
                     <td>@Html.DisplayFor(e => employee.HireDate)</td>

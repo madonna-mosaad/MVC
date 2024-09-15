@@ -13,5 +13,9 @@ namespace BusinessLayer.Repository
     public class DepartmentRepository : GenericRepository<Department>, IDepartmentRepository
     {
         public DepartmentRepository(AppDbContext appDbContext) : base(appDbContext) { }
+        public IQueryable<Department> GetByName(string name)
+        {
+            return _appDbContext.Departments.Where(x => x.Name.ToLower() == name.ToLower()).AsNoTracking();
+        }
     }
 }

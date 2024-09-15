@@ -15,6 +15,7 @@ namespace DataAccessLayer.Data.Configurations
         {
             builder.Property(E => E.Salary).HasColumnType("decimal(10,2)");
             builder.Property(E=>E.Gender).HasConversion(G=>G.ToString(),G=>(Gender)Enum.Parse(typeof(Gender),G,false));
+            
         }
     }
 }

@@ -41,5 +41,7 @@ namespace DataAccessLayer.Models
         //soft Delete ( lw eldata msh 3ayzaha f elwebsite bs 3ayzaha f elDB yb2a mms7hash la a3ml el IsDeleted b true)
         public bool IsDeleted { get; set; }
         public Gender Gender { get; set; }
+        public Department Department { get; set; }
+        public int? DepartmentId { get; set; }
     }
 }

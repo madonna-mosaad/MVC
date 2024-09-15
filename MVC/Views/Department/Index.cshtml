@@ -6,6 +6,13 @@
 @*by default go to action that its method get [HttpGet]*@
 @*I can don't write the asp-controller="" if the action in same controller *@
 <a asp-action="Create" class="btn btn-primary">Create new Department</a>
+<div class="align-content-center mt-3 ">
+    <form asp-action="Index" method="get">
+        @*the name is has the name of parameter*@
+        <input type="text" name="Name" placeholder="search by name" />
+        <input type="submit" value="Search" class="btn btn-success" />
+    </form>
+</div>
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-primary mt-3">

@@ -9,6 +9,6 @@ namespace BusinessLayer.Interfaces
 {
     public interface IDepartmentRepository:IGenericRepository<Department>
     {
-        
+        public IQueryable<Department> GetByName (string name);
     }
 }

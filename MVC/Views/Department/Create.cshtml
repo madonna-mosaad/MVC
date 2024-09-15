@@ -7,8 +7,8 @@
 <br />
 <br />
 
-@*form go to post action so will go to create action that [HttpPost]
-  form by default make asp-route-department="@Model" 
+@*form go to post action so will go to create action that [HttpPost] (if i didn't define the method then the default is method="post" )
+  form by default make asp-route-department="@Model" (the value of create action's parameter if has parameter same type as @Model)
 *@
 @*I can don't write the asp-controller="" if the action in same controller *@
 <form asp-action="Create" method="post">

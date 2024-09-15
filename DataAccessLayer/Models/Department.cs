@@ -15,6 +15,7 @@ namespace DataAccessLayer.Models
         public string Name { get; set; }
         [Display(Name = "Date Of Creation")] // the name that appear in website if use the property's name in DisplayNameFor method
         public DateTime DateOfCreation { get; set; }//DateTime is value type so it is required by default(not allow null)
+        public ICollection<Employee> Employees { get; set; }=new HashSet<Employee>();//Navigation property
     }
 }
 

@@ -17,10 +17,32 @@ namespace MVC.Controllers
             _employeeRepository = employeeRepository;
             _webHostEnvironment = webHostEnvironment;
         }
-        public IActionResult Index()
+        public IActionResult Index(string Name)
         {
-            var employee = _employeeRepository.GetAll();
-            return View(employee);
+            try
+            {
+                if (string.IsNullOrEmpty(Name))
+                {
+                    var employee = _employeeRepository.GetAll();
+                    return View(employee);
+                }
+                var emp = _employeeRepository.GetByName(Name);
+                return View(emp);
+            }
+            catch (Exception ex)
+            {
+                if (_webHostEnvironment.IsDevelopment())
+                {
+                    //log exception (the developer to handle the exception)
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+                else
+                {
+                    //friendly message to user
+                    ModelState.AddModelError(string.Empty, "An Error occured during add department");
+                }
+                return View();
+            }
         }
         public IActionResult Create()
         {

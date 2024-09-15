@@ -16,7 +16,11 @@ namespace BusinessLayer.Repository
 
         public IQueryable<Employee> GetByAddress(string address)
         {
-           return _appDbContext.Employees.Where(e => e.Address == address).AsNoTracking();
+           return _appDbContext.Employees.Where(e => e.Address.ToLower() == address.ToLower()).AsNoTracking();
+        }
+        public IQueryable<Employee> GetByName(string name)
+        {
+            return _appDbContext.Employees.Where(e => e.Name.ToLower() == name.ToLower()).Include(e => e.Department).AsNoTracking();
         }
     }
 }

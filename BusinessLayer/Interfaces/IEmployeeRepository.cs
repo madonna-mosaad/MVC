@@ -10,5 +10,6 @@ namespace BusinessLayer.Interfaces
     public interface IEmployeeRepository:IGenericRepository<Employee>
     {
         public IQueryable<Employee> GetByAddress(string address);
+        public IQueryable<Employee> GetByName(string name);
     }
 }
