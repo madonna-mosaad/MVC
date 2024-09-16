@@ -13,9 +13,10 @@ namespace DataAccessLayer.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
+            //this is Server-Side validations (ely betcheck 3leha fe (ModelState.IsValid))
             builder.Property(E => E.Salary).HasColumnType("decimal(10,2)");
             builder.Property(E=>E.Gender).HasConversion(G=>G.ToString(),G=>(Gender)Enum.Parse(typeof(Gender),G,false));
-            
+            builder.Property(E => E.Name).IsRequired().HasMaxLength(50);
         }
     }
 }

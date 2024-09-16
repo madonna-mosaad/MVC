@@ -13,7 +13,10 @@ namespace DataAccessLayer.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Department> builder)
         {
-           builder.HasMany(D=>D.Employees).WithOne(E=>E.Department).OnDelete(DeleteBehavior.Cascade);
+            //this is Server-Side validations (ely betcheck 3leha fe (ModelState.IsValid))
+            builder.HasMany(D=>D.Employees).WithOne(E=>E.Department).OnDelete(DeleteBehavior.Cascade);
+            builder.Property(D => D.Code).IsRequired();
+            builder.Property(D=>D.Name).IsRequired();
         }
     }
 }

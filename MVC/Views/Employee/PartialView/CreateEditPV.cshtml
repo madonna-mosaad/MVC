@@ -1,5 +1,5 @@
 ﻿@*same comments as Department*@
-@model Employee;  
+@model EmployeeViewModel;  
 @*lw kont 3mlt el dependency injection f elcontroller yb2a kont hb3t el _depRepo.GetAll() mn elaction 3n tre2 el ViewData*@
 @inject IDepartmentRepository _depRepo;
 @{
@@ -40,11 +40,6 @@
     <label asp-for="IsActive" class="col-form-label"></label>
     @*the bool type doesnot need type*@
     <input asp-for="IsActive" class="form-control" />
-</div>
-<div>
-    <label asp-for="IsDeleted" class="col-form-label"></label>
-    @*the bool type doesnot need type*@
-    <input asp-for="IsDeleted" class="form-control" />
 </div>
 <div>
     <label asp-for="Department" class="col-form-label"></label>
