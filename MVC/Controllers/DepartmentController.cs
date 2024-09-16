@@ -1,10 +1,14 @@
-﻿using BusinessLayer.Interfaces;
+﻿using AutoMapper;
+using BusinessLayer.Interfaces;
 using BusinessLayer.Repository;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using MVC.ViewModels;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MVC.Controllers
 {
@@ -12,10 +16,13 @@ namespace MVC.Controllers
     {
         private readonly IDepartmentRepository _repository;
         private readonly IWebHostEnvironment _environment;//registered in AddControllerWithView as (Singelton) tomake developer log any exception 
-        public DepartmentController(IDepartmentRepository repository, IWebHostEnvironment environment)
+        private readonly IMapper _mapper;
+
+        public DepartmentController(IDepartmentRepository repository, IWebHostEnvironment environment,IMapper mapper)
         {
             _repository = repository;
             _environment = environment;
+            _mapper = mapper;
         }
 
         //[HttpGet] is the default
@@ -26,10 +33,12 @@ namespace MVC.Controllers
                 if (string.IsNullOrEmpty(Name))
                 {
                     var departmentt = _repository.GetAll();
-                    return View(departmentt);
+                    var mapped= _mapper.Map<IEnumerable<Department>,IEnumerable<DepartmentViewModel>>(departmentt);
+                    return View(mapped);
                 }
                 var department = _repository.GetByName(Name);
-                return View(department);
+                var mapp=_mapper.Map<IEnumerable<Department>,IEnumerable<DepartmentViewModel>>(department);
+                return View(mapp);
             }
             catch (Exception ex)
             {
@@ -57,11 +66,12 @@ namespace MVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]//to prevent any tool to arrive to this end-point(action)and edit any value of prop. of obj (parameter)=>(browser user only can)
                                   //above any action deal with DB and take parameter
-        public IActionResult Create(Department newDepartment)
+        public IActionResult Create(DepartmentViewModel newDepartmentVM)
         {
             if (ModelState.IsValid)//mean that all validations (sever side or client side(check after send request to server and response by the check result)) is ok
             {
-                var count = _repository.Add(newDepartment);
+                var mapped= _mapper.Map<DepartmentViewModel,Department>(newDepartmentVM);
+                var count = _repository.Add(mapped);
                 if (count > 0)//to handle any exception appear in DB(to catch if doesn't add)
                 {
                     TempData["Message"] = "successfully created";
@@ -72,7 +82,7 @@ namespace MVC.Controllers
                     TempData["Message"] = "not successfully created";
                 }
             }
-            return View(newDepartment);//the reason of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
+            return View(newDepartmentVM);//the reason of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
 
         }
 
@@ -84,11 +94,12 @@ namespace MVC.Controllers
                 return BadRequest();//400 state-Code (if front send wrong data or doesnot send any data ) 
             }
             Department dep = _repository.GetById(id.Value);
+            var mapped = _mapper.Map<Department,DepartmentViewModel>(dep);
             if (dep == null)//if data not found in DB
             {
                 return NotFound();// 404 state_Code (if the data not found in DB)
             }
-            return View(ViewName, dep);
+            return View(ViewName, mapped);
         }
 
         //[HttpGet] the default 
@@ -100,17 +111,18 @@ namespace MVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]//to prevent any tool to arrive to this end-point(action)and edit any value of prop. of obj (parameter)=>(browser user only can)
                                   //above any action deal with DB and take parameter
-        public IActionResult Edit([FromRoute] int id, Department department)// I make id take its value from Route only to prevent any one to edit the id value from f12 code (in website) or any tools
+        public IActionResult Edit([FromRoute] int id, DepartmentViewModel departmentVM)// I make id take its value from Route only to prevent any one to edit the id value from f12 code (in website) or any tools
         {
             if (ModelState.IsValid)//mean that all validations (sever side or client side(check after send request to server and response by the check result)) is ok
             {
-                if (id != department.Id)//if any tool edit the department.Id then it will send badRequest
+                if (id != departmentVM.Id)//if any tool edit the department.Id then it will send badRequest
                 {
                     return BadRequest();
                 }
                 try//to handle any exception appear in DB
                 {
-                    _repository.Update(department);
+                    var mapped = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
+                    _repository.Update(mapped);
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -127,7 +139,7 @@ namespace MVC.Controllers
                     }
                 }
             }
-            return View(department);//the reason of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
+            return View(departmentVM);//the reason of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
 
         }
 
@@ -140,11 +152,12 @@ namespace MVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]//to prevent any tool to arrive to this end-point(action) and edit any value of prop. of obj (parameter)=>(browser user only can)
                                   //above any action deal with DB and take parameter
-        public IActionResult Delete(Department department)
+        public IActionResult Delete(DepartmentViewModel departmentVM)
         {
             try//to handle any exception appear in DB
             {
-                _repository.Delete(department);
+                var mapped = _mapper.Map<DepartmentViewModel,Department>(departmentVM);
+                _repository.Delete(mapped);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -159,7 +172,7 @@ namespace MVC.Controllers
                     //friendly message to user
                     ModelState.AddModelError(string.Empty, "An Error occured during edit department");
                 }
-                return View(department);//the reason of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
+                return View(departmentVM);//the reason of give the newDepartment as value of parameter that if Modelstate is not valid it will be in the same page with same data
             }
         }
     }
