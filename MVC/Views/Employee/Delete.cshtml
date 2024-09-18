@@ -10,6 +10,8 @@
 
 <form asp-action="Delete">
     <partial name="PartialView/DetailsDeletePV" />
+    @*to send the ImageName to DB and Delete in UploadFile class *@
+    <input type="hidden" asp-for="ImageName" />
     <input type="submit" value="Delete" class="btn btn-primary mt-5">
     <a asp-action="Index" class="btn btn-Light mt-5">Back to home</a>
 </form>

@@ -14,13 +14,23 @@ namespace MVC.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _repository;
+        //after use UnitOfWork
+        private readonly IUnitOfWork _unitOfWork;
+
+        //in GenericRepository before use UnitOfWork
+        //private readonly IDepartmentRepository _repository;
+
         private readonly IWebHostEnvironment _environment;//registered in AddControllerWithView as (Singelton) tomake developer log any exception 
         private readonly IMapper _mapper;
 
-        public DepartmentController(IDepartmentRepository repository, IWebHostEnvironment environment,IMapper mapper)
+        public DepartmentController(/*IDepartmentRepository repository*/ IUnitOfWork unitOfWork, IWebHostEnvironment environment,IMapper mapper)
         {
-            _repository = repository;
+            //after use UnitOfWork
+            _unitOfWork = unitOfWork;
+
+            //in GenericRepository before use UnitOfWork
+            //_repository = repository;
+
             _environment = environment;
             _mapper = mapper;
         }
@@ -32,11 +42,13 @@ namespace MVC.Controllers
             {
                 if (string.IsNullOrEmpty(Name))
                 {
-                    var departmentt = _repository.GetAll();
+                    //var departmentt = _repository.GetAll();
+                    var departmentt = _unitOfWork.DepartmentRepository.GetAll();
                     var mapped= _mapper.Map<IEnumerable<Department>,IEnumerable<DepartmentViewModel>>(departmentt);
                     return View(mapped);
                 }
-                var department = _repository.GetByName(Name);
+                //var department = _repository.GetByName(Name);
+                var department = _unitOfWork.DepartmentRepository.GetByName(Name);
                 var mapp=_mapper.Map<IEnumerable<Department>,IEnumerable<DepartmentViewModel>>(department);
                 return View(mapp);
             }
@@ -71,7 +83,9 @@ namespace MVC.Controllers
             if (ModelState.IsValid)//mean that all validations (sever side or client side(check after send request to server and response by the check result)) is ok
             {
                 var mapped= _mapper.Map<DepartmentViewModel,Department>(newDepartmentVM);
-                var count = _repository.Add(mapped);
+                //var count = _repository.Add(mapped);
+                _unitOfWork.DepartmentRepository.Add(mapped);
+                var count = _unitOfWork.Save();
                 if (count > 0)//to handle any exception appear in DB(to catch if doesn't add)
                 {
                     TempData["Message"] = "successfully created";
@@ -93,7 +107,8 @@ namespace MVC.Controllers
             {
                 return BadRequest();//400 state-Code (if front send wrong data or doesnot send any data ) 
             }
-            Department dep = _repository.GetById(id.Value);
+            //Department dep = _repository.GetById(id.Value);
+            Department dep = _unitOfWork.DepartmentRepository.GetById(id.Value);
             var mapped = _mapper.Map<Department,DepartmentViewModel>(dep);
             if (dep == null)//if data not found in DB
             {
@@ -122,7 +137,9 @@ namespace MVC.Controllers
                 try//to handle any exception appear in DB
                 {
                     var mapped = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
-                    _repository.Update(mapped);
+                    //_repository.Update(mapped);
+                    _unitOfWork.DepartmentRepository.Update(mapped);
+                    _unitOfWork.Save();
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -157,7 +174,9 @@ namespace MVC.Controllers
             try//to handle any exception appear in DB
             {
                 var mapped = _mapper.Map<DepartmentViewModel,Department>(departmentVM);
-                _repository.Delete(mapped);
+                //_repository.Delete(mapped);
+                _unitOfWork.DepartmentRepository.Delete(mapped);
+                _unitOfWork.Save();
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

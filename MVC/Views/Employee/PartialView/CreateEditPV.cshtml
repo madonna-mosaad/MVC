@@ -1,10 +1,19 @@
 ﻿@*same comments as Department*@
 @model EmployeeViewModel;  
+
+@*in GenericRepository before use UnitOfWork*@
 @*lw kont 3mlt el dependency injection f elcontroller yb2a kont hb3t el _depRepo.GetAll() mn elaction 3n tre2 el ViewData*@
-@inject IDepartmentRepository _depRepo;
+@*@inject IDepartmentRepository _depRepo;
+  @{
+    var departments = new SelectList(_depRepo.GetAll(),nameof(Department.Id),nameof(Department.Name));
+   }
+*@
+
+@*after use UnitOfWork*@
 @{
-    var departments = new SelectList(_depRepo.GetAll(),nameof(Department.Id)@*or "Department.Id"*@,nameof(Department.Name)@*or Department.Name*@);
+    var departments = new SelectList(ViewData["Departments"] as IEnumerable<Department>, nameof(Department.Id), nameof(Department.Name));
 }
+
 <div>
     <label asp-for="Name" class="col-form-label"></label>
     <input type="text" asp-for="Name" class="form-control" />
@@ -52,4 +61,9 @@
     <select asp-items="@departments" asp-for="DepartmentId" >@* name="DepartmentId" is the property that will store the value that user will select in DB (in FK)*@
         <option value="null" class="form-control">--Select Department--</option>
     </select>
+</div>
+@*to chose the image from computer*@
+<div>
+    <label asp-for="Image" class="col-form-label"></label>
+    <input type="file" asp-for="Image" class="form-control-file" />
 </div>

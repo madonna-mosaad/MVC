@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.Models;
 using System.ComponentModel.DataAnnotations;
 using System;
+using Microsoft.AspNetCore.Http;
 
 namespace MVC.ViewModels
 {
@@ -31,5 +32,7 @@ namespace MVC.ViewModels
         //h7tag el FK f el view
         public Department Department { get; set; }
         public int? DepartmentId { get; set; }
+        public string ImageName {  get; set; }
+        public IFormFile Image { get; set; }
     }
 }
