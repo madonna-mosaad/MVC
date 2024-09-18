@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using BusinessLayer.Interfaces;
+using BusinessLayer.Repository;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using MVC.Helpers;
 using MVC.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace MVC.Controllers
@@ -14,13 +17,23 @@ namespace MVC.Controllers
     public class EmployeeController : Controller
     {
         //same comments as DepartmentController
-        private readonly IEmployeeRepository _employeeRepository;
+
+        //after use UnitOfWork
+        private readonly IUnitOfWork _unitOfWork;
+
+        //in GenericRepository before use UnitOfWork
+        //private readonly IEmployeeRepository _employeeRepository;
+
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IMapper _mapper;
 
-        public EmployeeController(IEmployeeRepository employeeRepository , IWebHostEnvironment webHostEnvironment,IMapper mapper) 
+        public EmployeeController(/*IEmployeeRepository employeeRepository*/ IUnitOfWork unitOfWork , IWebHostEnvironment webHostEnvironment,IMapper mapper) 
         {
-            _employeeRepository = employeeRepository;
+            _unitOfWork = unitOfWork;
+
+            //in GenericRepository before use UnitOfWork
+            //_employeeRepository = employeeRepository;
+
             _webHostEnvironment = webHostEnvironment;
             _mapper = mapper;
         }
@@ -30,11 +43,13 @@ namespace MVC.Controllers
             {
                 if (string.IsNullOrEmpty(Name))
                 {
-                    var employees = _employeeRepository.GetAll();
+                    //var employees = _employeeRepository.GetAll();
+                    var employees = _unitOfWork.EmployeeRepository.GetAll();
                     var mapped = _mapper.Map< IEnumerable<Employee> , IEnumerable<EmployeeViewModel> >(employees);
                     return View(mapped);
                 }
-                var emp = _employeeRepository.GetByName(Name);
+                //var emp = _employeeRepository.GetByName(Name);
+                var emp = _unitOfWork.EmployeeRepository.GetByName(Name);
                 var mappedemp=_mapper.Map<IEnumerable<Employee>,IEnumerable<EmployeeViewModel>>(emp);
                 return View(mappedemp);
             }
@@ -55,6 +70,7 @@ namespace MVC.Controllers
         }
         public IActionResult Create()
         {
+            ViewData["Departments"] = _unitOfWork.DepartmentRepository.GetAll();//after use UnitOfWork
             return View();
         }
         [HttpPost]
@@ -64,8 +80,16 @@ namespace MVC.Controllers
 
             if (ModelState.IsValid)
             {
+                if (employeeVM.Image != null) //because it will throw exception if user send empty file to Upload
+                {
+                    
+                    employeeVM.ImageName = UploadFile.Upload(employeeVM.Image, "Images");//to upload the image in the Images folder(in my code) and return the fileName
+                                                                                         // because ImageName comed from view = null (mlhash input)
+                }
                 var mapped= _mapper.Map<EmployeeViewModel,Employee>(employeeVM);
-                var count = _employeeRepository.Add(mapped);
+                //var count = _employeeRepository.Add(mapped);
+                _unitOfWork.EmployeeRepository.Add(mapped);
+                var count = _unitOfWork.Save();
                 if (count > 0)
                 {
                     TempData["Message"] = "successfully created";
@@ -76,6 +100,7 @@ namespace MVC.Controllers
                     TempData["Message"] = "not successfully created";
                 }
             }
+            ViewData["Departments"] = _unitOfWork.DepartmentRepository.GetAll();//after use UnitOfWork
             return View(employeeVM);
         }
         public IActionResult Details(int? id,string ViewName="Details")
@@ -84,11 +109,17 @@ namespace MVC.Controllers
             {
                 return BadRequest();
             }
-            var employee= _employeeRepository.GetById(id.Value);
+            //var employee= _employeeRepository.GetById(id.Value);
+            var employee = _unitOfWork.EmployeeRepository.GetById(id.Value);
             var mapped= _mapper.Map<Employee, EmployeeViewModel>(employee);
             if (employee == null)
             {
                 return NotFound();
+            }
+            if(ViewName== "Edit")//after use UnitOfWork
+            {
+                ViewData["Departments"] = _unitOfWork.DepartmentRepository.GetAll();
+                return View(ViewName, mapped);
             }
             return View(ViewName,mapped);
         }
@@ -102,8 +133,15 @@ namespace MVC.Controllers
         {
             try
             {
+               
                 var mapped = _mapper.Map<EmployeeViewModel,Employee>(employeeVM);
-                _employeeRepository.Delete(mapped);
+                //_employeeRepository.Delete(mapped);
+                _unitOfWork.EmployeeRepository.Delete(mapped);
+                _unitOfWork.Save();
+                if (employeeVM.ImageName != null)  //because it will throw exception if user send empty fileName to Delete 
+                {
+                    UploadFile.Delete(employeeVM.ImageName, "Images");//to delete the image from Images folder(in my code) after the delete from DB
+                }
                 return RedirectToAction("Index");
             }
             catch(Exception ex)
@@ -134,8 +172,16 @@ namespace MVC.Controllers
                 }
                 try
                 {
+                    if (employeeVM.Image != null) //because it will throw exception if user send empty file to Upload and if user send empty fileName to Delete 
+                    {
+                        var name = employeeVM.ImageName; // to keep the old ImageName
+                        employeeVM.ImageName = UploadFile.Upload(employeeVM.Image, "Images");//to upload the image in the Images folder(in my code) and return the fileName
+                        UploadFile.Delete(name, "Images");//to delete the old Image from Images folder(in my code)
+                    }
                     var mapped = _mapper.Map<EmployeeViewModel,Employee>(employeeVM);
-                    _employeeRepository.Update(mapped);
+                    //_employeeRepository.Update(mapped);
+                    _unitOfWork.EmployeeRepository.Update(mapped);
+                    _unitOfWork.Save();
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -150,6 +196,7 @@ namespace MVC.Controllers
                     }
                 }
             }
+            ViewData["Departments"] = _unitOfWork.DepartmentRepository.GetAll();//after use UnitOfWork
             return View(employeeVM);
         }
     }

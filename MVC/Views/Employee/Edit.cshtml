@@ -8,8 +8,10 @@
 <br />
 <br />
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
     <partial name="PartialView/CreateEditPV" />
+    @*to send the old ImageName to name  *@
+    <input type="hidden" asp-for="ImageName"/>
     <input type="submit" value="Edit" class="btn btn-primary mt-5" />
     <a asp-action="Index" class="btn btn-Light mt-5">Back to home</a>
 </form>

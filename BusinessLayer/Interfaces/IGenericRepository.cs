@@ -11,8 +11,15 @@ namespace BusinessLayer.Interfaces
     {
         public IEnumerable<T> GetAll();
         public T GetById(int id);
-        public int Add(T entity);
-        public int Update(T entity);
-        public int Delete(T entity);
+
+        //in GenericRepository before use UnitOfWork
+        //public int Add(T entity); 
+        //public int Update(T entity);
+        //public int Delete(T entity);
+
+        //after use UnitOfWork
+        public void Add(T entity); 
+        public void Update(T entity);
+        public void Delete(T entity);
     }
 }

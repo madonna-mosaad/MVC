@@ -13,9 +13,15 @@ namespace MVC.Extentions
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddAutoMapper(p => p.AddProfile(new MappingProfiles()));
+
+            //in GenericRepository before use UnitOfWork
+            //services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            //services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+            //after use UnitOfWork
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
             return services;
         }
     }

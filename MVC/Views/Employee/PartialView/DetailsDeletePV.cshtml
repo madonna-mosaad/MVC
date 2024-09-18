@@ -1,5 +1,10 @@
 ﻿@*same comments as Department*@
 @model EmployeeViewModel;  
+@*to show photo*@
+<div>
+    @*take the photo from Images folder(in my code) that user uploded in to show it *@
+    <img src="Files/Images" class="figure-img" />
+</div>
 <div>
     <label asp-for="Name" class="col-form-label"></label>
     <input type="text" asp-for="Name" class="form-control" readonly />
@@ -33,3 +38,6 @@
     @*the bool type doesnot need type*@
     <input asp-for="IsActive" class="form-control" readonly />
 </div>
+
+
+
