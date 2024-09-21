@@ -3,6 +3,7 @@ using BusinessLayer.Interfaces;
 using BusinessLayer.Repository;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using MVC.ViewModels;
@@ -22,7 +23,7 @@ namespace MVC.Controllers
 
         private readonly IWebHostEnvironment _environment;//registered in AddControllerWithView as (Singelton) tomake developer log any exception 
         private readonly IMapper _mapper;
-
+        
         public DepartmentController(/*IDepartmentRepository repository*/ IUnitOfWork unitOfWork, IWebHostEnvironment environment,IMapper mapper)
         {
             //after use UnitOfWork
