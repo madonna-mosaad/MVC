@@ -1,6 +1,8 @@
 ﻿using BusinessLayer.Interfaces;
 using BusinessLayer.Repository;
 using DataAccessLayer.Data.Contexts;
+using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,7 @@ namespace MVC.Extentions
 
             //after use UnitOfWork
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddIdentity<Users,IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
             
             return services;
         }
