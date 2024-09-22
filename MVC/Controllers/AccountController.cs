@@ -1,7 +1,9 @@
 ﻿using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MVC.Helpers;
 using MVC.ViewModels;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MVC.Controllers
@@ -79,5 +81,63 @@ namespace MVC.Controllers
             
         }
        
-    }
+        public async Task<IActionResult> ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordViewModel forgetPasswordViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user =await _userManager.FindByEmailAsync(forgetPasswordViewModel.Email);
+                if (user is not null) 
+                {
+
+                    string tok = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var url = Url.Action("RestPassword", "Account", new { email = forgetPasswordViewModel.Email, token = tok });
+                    Email email = new Email()
+                    {
+                        Subject = "Reset your Password",
+                        Body = url,
+                        Reciepent = forgetPasswordViewModel.Email
+                    };
+                    EmailSetting.SendEmail(email);
+                    return RedirectToAction("EmailBox");
+
+                }
+                ModelState.AddModelError(string.Empty, "not found");
+            }
+            return View(forgetPasswordViewModel);
+        }
+        public async Task<IActionResult> EmailBox()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> RestPassword(string email , string token)
+        {
+            TempData["email"] = email;
+            TempData["token"] = token;
+            return View();
+        }
+
+        [HttpPost]
+		public async Task<IActionResult> RestPassword(RestPasswordViewModel restPasswordViewModel)
+		{
+            if (ModelState.IsValid)
+            {
+
+                var user =await _userManager.FindByEmailAsync(TempData["email"] as string);
+                var result= await _userManager.ResetPasswordAsync(user,TempData["token"] as string,restPasswordViewModel.Password);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("SignIn");
+                }
+                ModelState.AddModelError(string.Empty, "not updated");
+            }
+            return View(restPasswordViewModel);
+		}
+	}
 }
