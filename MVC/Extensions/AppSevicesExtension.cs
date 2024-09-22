@@ -23,9 +23,9 @@ namespace MVC.Extentions
 
             //after use UnitOfWork
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddIdentity<Users,IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
-            
-            return services;
+			services.AddIdentity<Users, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+			return services;
         }
     }
 }

@@ -59,7 +59,7 @@ namespace MVC
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Account}/{action=SignUp}");
+                    pattern: "{controller=Account}/{action=SignIn}");
             });
         }
     }
